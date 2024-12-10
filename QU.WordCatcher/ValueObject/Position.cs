@@ -20,11 +20,6 @@ namespace QU.WordCatcher.Domain.ValueObject
             Column = column;
         }
 
-        public Position Move(int rowDelta, int columnDelta)
-        {
-            return new Position(Row + rowDelta, Column + columnDelta);
-        }
-
         public override bool Equals(object? obj)
         {
             if (obj is not Position other) return false;
