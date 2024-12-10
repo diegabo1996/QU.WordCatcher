@@ -1,5 +1,5 @@
-﻿using QU.WordCatcher.Application.Interfaces;
-using QU.WordCatcher.Domain.Entities;
+﻿using QU.WordCatcher.Domain.Entities;
+using QU.WordCatcher.Domain.Interfaces;
 using QU.WordCatcher.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
@@ -30,9 +30,7 @@ namespace QU.WordCatcher.Application.Services
 
             foreach (var word in words)
             {
-                int count = CountWordOccurrences(word.Text);
-                if (count > 0)
-                    word.IncrementFrequency();
+                CountWordOccurrences(word);
             }
 
             return words
@@ -42,23 +40,25 @@ namespace QU.WordCatcher.Application.Services
                 .Select(w => w.Text);
         }
 
-        private int CountWordOccurrences(string wordText)
+        private void CountWordOccurrences(Word word)
         {
-            int count = 0;
-
             for (int row = 0; row < _matrix.Rows; row++)
             {
                 string rowText = GetRowAsString(row);
-                count += CountOccurrencesInLine(rowText, wordText);
+                for(int i=0; i < CountOccurrencesInLine(rowText, word.Text); i++)
+                {
+                    word.IncrementFrequency();
+                }
             }
 
             for (int col = 0; col < _matrix.Columns; col++)
             {
                 string colText = GetColumnAsString(col);
-                count += CountOccurrencesInLine(colText, wordText);
+                for (int i = 0; i < CountOccurrencesInLine(colText, word.Text); i++)
+                {
+                    word.IncrementFrequency();
+                }
             }
-
-            return count;
         }
 
         private string GetRowAsString(int row)
